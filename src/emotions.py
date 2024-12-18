@@ -32,21 +32,6 @@ train_datagen = ImageDataGenerator(
 )
 val_datagen = ImageDataGenerator(rescale=1./255)
 
-train_generator = train_datagen.flow_from_directory(
-    train_dir,
-    target_size=(48, 48),
-    batch_size=batch_size,
-    color_mode="grayscale",
-    class_mode='categorical'
-)
-validation_generator = val_datagen.flow_from_directory(
-    val_dir,
-    target_size=(48, 48),
-    batch_size=batch_size,
-    color_mode="grayscale",
-    class_mode='categorical',
-    shuffle=False
-)
 
 model = tf.keras.Sequential([
     tf.keras.layers.Input(shape=(48, 48, 1)),
@@ -145,6 +130,22 @@ def detect_emotion_from_camera():
     return frame, emotion
 
 if mode == "test":
+    train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(48, 48),
+        batch_size=batch_size,
+        color_mode="grayscale",
+        class_mode='categorical'
+    )
+    validation_generator = val_datagen.flow_from_directory(
+        val_dir,
+        target_size=(48, 48),
+        batch_size=batch_size,
+        color_mode="grayscale",
+        class_mode='categorical',
+        shuffle=False
+    )
+
     model.load_weights('model_weights.weights.h5')
 
     y_true = validation_generator.classes
@@ -160,6 +161,22 @@ if mode == "test":
     print(report)
 
 elif mode == "train":
+    train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(48, 48),
+        batch_size=batch_size,
+        color_mode="grayscale",
+        class_mode='categorical'
+    )
+    validation_generator = val_datagen.flow_from_directory(
+        val_dir,
+        target_size=(48, 48),
+        batch_size=batch_size,
+        color_mode="grayscale",
+        class_mode='categorical',
+        shuffle=False
+    )
+
     initial_learning_rate = 0.001
     lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate=initial_learning_rate,
